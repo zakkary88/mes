@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -95,22 +96,26 @@ public class DocumentDetailsHooks {
         if (DocumentType.RECEIPT.getStringValue().equals(documentType)
                 || DocumentType.INTERNAL_INBOUND.getStringValue().equals(documentType)) {
             enableInboundDocumentPositionsAttributesAndFillInUnit(view, true);
+            enableStorageLocation(view, true);
             showWarehouse(view, false, true);
             showCompany(view, true);
             // enableAttributesADL(view, true);
         } else if (DocumentType.TRANSFER.getStringValue().equals(documentType)) {
             enableInboundDocumentPositionsAttributesAndFillInUnit(view, false);
+            enableStorageLocation(view, true);
             showWarehouse(view, true, true);
             showCompany(view, false);
             // enableAttributesADL(view, false);
         } else if (DocumentType.RELEASE.getStringValue().equals(documentType)
                 || DocumentType.INTERNAL_OUTBOUND.getStringValue().equals(documentType)) {
             enableInboundDocumentPositionsAttributesAndFillInUnit(view, false);
+            enableStorageLocation(view, false);
             showWarehouse(view, true, false);
             showCompany(view, true);
             // enableAttributesADL(view, false);
         } else {
             enableInboundDocumentPositionsAttributesAndFillInUnit(view, false);
+            enableStorageLocation(view, true);
             showWarehouse(view, false, false);
             showCompany(view, false);
             // enableAttributesADL(view, false);
@@ -130,6 +135,15 @@ public class DocumentDetailsHooks {
         company.setEnabled(visible);
     }
 
+    private void enableStorageLocation(final ViewDefinitionState view, boolean enabled) {
+        AwesomeDynamicListComponent positionsADL = (AwesomeDynamicListComponent) view.getComponentByReference("positions");
+        for (FormComponent positionForm : positionsADL.getFormComponents()) {
+            FieldComponent storageLocation = positionForm.findFieldComponentByName(PositionFields.STORAGE_LOCATION);
+
+            storageLocation.setEnabled(enabled);
+        }
+    }
+
     private void enableInboundDocumentPositionsAttributesAndFillInUnit(final ViewDefinitionState view, final boolean enabled) {
 
         AwesomeDynamicListComponent positionsADL = (AwesomeDynamicListComponent) view.getComponentByReference("positions");
@@ -139,6 +153,10 @@ public class DocumentDetailsHooks {
                 field.setEnabled(enabled);
 
             }
+            FieldComponent givenQuantity = positionForm.findFieldComponentByName(PositionFields.GIVEN_QUANTITY);
+            FieldComponent givenUnit = positionForm.findFieldComponentByName(PositionFields.GIVEN_UNIT);
+            givenQuantity.setRequired(true);
+            givenUnit.setRequired(true);
             fillInUnit(positionForm);
 
         }
@@ -169,6 +187,10 @@ public class DocumentDetailsHooks {
         }
 
         String unit = product.getStringField(UNIT);
+        String givenUnit = position.getStringField(PositionFields.GIVEN_UNIT);
+        if (StringUtils.isEmpty(givenUnit)) {
+            position.setField(PositionFields.GIVEN_UNIT, unit);
+        }
 
         position.setField(PositionFields.UNIT, unit);
         positionForm.setEntity(position);

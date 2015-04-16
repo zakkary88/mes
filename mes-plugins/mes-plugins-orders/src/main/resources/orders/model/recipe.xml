@@ -11,7 +11,7 @@
             <validatesLength max="255"/>
         </string>
         <boolean name="isDefault"/>
-        <string name="strenght" required="true">
+        <string name="strength" required="true">
             <validatesLength max="255"/>
         </string>
         <decimal name="batchQuantity">
@@ -35,12 +35,10 @@
 
         <hasMany name="instructions" joinField="recipe" model="instruction" cascade="nullify" copyable="true"/>
 
-        <hasMany name="orders" joinField="recipe" model="order" cascade="nullify"/>
+        <hasMany name="orders" joinField="recipe" model="order" cascade="nullify" copyable="false"/>
     </fields>
 
     <hooks>
-        <onCreate class="com.qcadoo.mes.mbr.hooks.MbrModelHooks" method="onCreate"/>
-        <onCopy class="com.qcadoo.mes.mbr.hooks.MbrModelHooks" method="onCopy"/>
     </hooks>
 
     <identifier expression="#name"/>
