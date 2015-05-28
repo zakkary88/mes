@@ -37,6 +37,8 @@ public final class BasicConstants {
     public static final String MODEL_PARAMETER = "parameter";
 
     public static final String MODEL_PRODUCT = "product";
+    
+    public static final String MODEL_PURCHASE = "purchase";
 
     public static final String MODEL_STAFF = "staff";
 

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model name="purchase"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns="http://schema.qcadoo.org/model"
+   xsi:schemaLocation="http://schema.qcadoo.org/model http://schema.qcadoo.org/model.xsd">
+ 
+   <fields>
+   
+   	  <belongsTo name="product" required="true" model="product" plugin="basic" />
+   	  <decimal name="quantity" default="0" >
+            <validatesRange from="0" />
+      </decimal>
+      <decimal name="price" default="0" >
+            <validatesRange from="0" />
+      </decimal>
+      <datetime name="date" />
+
+    </fields>
+ 
+    <hooks>
+    	<validatesWith class="com.qcadoo.mes.basic.PurchaseService" method="checkIfThereIsNoPurchaseWithTheSameProductAndPrice" /> 
+    </hooks>
+ 
+    <identifier expression="#product + ' - ' + #price"/>
+ 
+</model>
