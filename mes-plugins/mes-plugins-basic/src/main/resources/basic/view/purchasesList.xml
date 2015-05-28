@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<view name="purchasesList" modelName="purchase" menuAccessible="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://schema.qcadoo.org/view"
+    xsi:schemaLocation="http://schema.qcadoo.org/view http://schema.qcadoo.org/view.xsd">
+ 
+    <component type="window" name="window">
+        <ribbon>
+            <group template="gridNewCopyAndRemoveAction" />
+            <group name="averagePrice">
+				<bigButton name="calculate" icon="generateIcon24.png"
+					state="enabled">
+					<script>
+						<![CDATA[
+							this.addOnChangeListener({
+								onClick: function() {
+									#{grid}.performEvent('getAveragePurchasesPrice', []);
+								}
+							});
+						]]>
+					</script>
+				</bigButton>
+			</group>
+        </ribbon>
+
+        <component type="grid" name="grid" reference="grid">
+
+            <option type="column" name="product" expression="#product['name']" link="true" />
+            <option type="column" name="quantity" fields="quantity" />
+            <option type="column" name="price" fields="price" />
+            <option type="column" name="date" fields="date" />
+
+            <option type="correspondingView" value="basic/purchaseDetails" />
+            <option type="correspondingComponent" value="form" />
+
+            <option type="searchable" value="number,product" />
+            <option type="orderable" value="date,product" />
+            <option type="fullScreen" value="true" />
+            <option type="order" column="date" direction="asc"/>    
+            
+            <listener event="getAveragePurchasesPrice"
+					class="com.qcadoo.mes.basic.PurchaseService"
+					method="getAveragePurchasesPrice" />
+					                  	
+        </component>
+        
+        <option type="fixedHeight" value="true" />
+        <option type="header" value="false" />
+           
+    </component>
+    <hooks>
+    </hooks>
+</view>
